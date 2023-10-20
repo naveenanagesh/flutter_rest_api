@@ -1,0 +1,259 @@
+import 'package:flutter_rest_api/models/locations.dart';
+import 'package:flutter_rest_api/services/login.dart';
+import 'package:flutter_rest_api/services/remote_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_rest_api/models/therapists.dart';
+import 'package:flutter_rest_api/views/login_page.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key, required this.title, required this.email})
+      : super(key: key);
+
+  final String title;
+  final String email;
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  var selectedIndex = 0;
+  LocationsList? locations;
+  TherapistsList? therapists;
+  var isLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getLocationsList();
+    getTherapistsList();
+  }
+
+  getLocationsList() async {
+    locations = await RemoteService().getLocations();
+    // if (locations != null) {
+    //   setState(() {
+    //     isLoaded = true;
+    //   });
+    // }
+    // print(isLoaded);
+  }
+
+  getTherapistsList() async {
+    therapists = await RemoteService().getTherapists();
+    print(therapists);
+
+    if (therapists != null) {
+      setState(() {
+        isLoaded = true;
+      });
+    }
+    print(isLoaded);
+  }
+
+  signOut() async {
+    await LogoutService.logout();
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const LoginPage(
+                  title: 'login',
+                )));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget page;
+    switch (selectedIndex) {
+      case 0:
+        page = LocationsPage(locations, isLoaded);
+        break;
+      case 1:
+        page = ServicePage(therapists, isLoaded);
+        break;
+      // case 2:
+      //   page = logoutMettod();
+      // break;
+      default:
+        throw UnimplementedError('no widget for $selectedIndex');
+    }
+
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.email),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // signOut();
+            print('Logout presssed');
+            signOut();
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (_) => const LoginPage(
+            //               title: 'hhhh',
+            //             )));
+          },
+          backgroundColor: Colors.green,
+          child: const Icon(Icons.logout_rounded),
+        ),
+        body: Row(
+          // visible: isLoaded,
+          // replacement: const Center(
+          //   child: CircularProgressIndicator(),
+          // ),
+          children: [
+            SafeArea(
+              child: NavigationRail(
+                extended: constraints.maxWidth >= 600,
+                destinations: const [
+                  NavigationRailDestination(
+                    icon: Icon(Icons.home),
+                    label: Text('Locations'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.favorite),
+                    label: Text('Therapists'),
+                  ),
+                  // NavigationRailDestination(
+                  //   icon: Icon(Icons.favorite),
+                  //   label: Text('Logout'),
+                  // ),
+                ],
+                selectedIndex: selectedIndex,
+                onDestinationSelected: (value) {
+                  setState(() {
+                    selectedIndex = value;
+                  });
+                },
+              ),
+            ),
+            Expanded(
+              child: Container(
+                color: Theme.of(context).colorScheme.tertiary,
+                child: page,
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  LoginPage logoutMettod() => const LoginPage(title: 'Login Page');
+}
+
+class LocationsPage extends StatelessWidget {
+  LocationsPage(this.locations, this.isLoaded, {super.key});
+  var isLoaded = false;
+  LocationsList? locations;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ListView.builder(
+        itemCount: locations?.length,
+        itemBuilder: (context, index) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  height: 20,
+                  width: 20,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.grey[300],
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        locations?.items[index].name ?? '',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        locations?.items[index].address ?? '',
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ServicePage extends StatelessWidget {
+  ServicePage(this.therapists, this.isLoaded, {super.key});
+  var isLoaded = false;
+  TherapistsList? therapists;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Visibility(
+        visible: isLoaded,
+        replacement: const Center(
+          child: CircularProgressIndicator(),
+        ),
+        child: ListView.builder(
+          itemCount: therapists?.length,
+          itemBuilder: (context, index) {
+            return Container(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.grey[300],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          therapists?.items[index].first_name ?? '',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          therapists?.items[index].bio ?? '',
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
