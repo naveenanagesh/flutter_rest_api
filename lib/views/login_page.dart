@@ -160,7 +160,6 @@ class newWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return const HomePage(
       title: 'Home Page',
-      email: "navee",
     );
   }
 }

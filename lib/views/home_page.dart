@@ -6,11 +6,9 @@ import 'package:flutter_rest_api/models/therapists.dart';
 import 'package:flutter_rest_api/views/login_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.title, required this.email})
-      : super(key: key);
+  const HomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
-  final String email;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -81,23 +79,44 @@ class _HomePageState extends State<HomePage> {
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(widget.email),
+          title: Text(widget.title),
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: ElevatedButton(
+          // color: Colors.black,
+          style: ButtonStyle(
+            textStyle: MaterialStateProperty.all(
+              const TextStyle(color: Colors.amber),
+            ),
+            backgroundColor: MaterialStateProperty.all(Colors.amber),
+          ),
           onPressed: () {
-            // signOut();
-            print('Logout presssed');
-            signOut();
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (_) => const LoginPage(
-            //               title: 'hhhh',
-            //             )));
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => _buildPopupDialog(context),
+            );
           },
-          backgroundColor: Colors.green,
-          child: const Icon(Icons.logout_rounded),
+          child: const Text(
+            'CLICK HERE TO LOGOUT',
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
         ),
+        //  FloatingActionButton(
+        //   onPressed: () {
+        //     // signOut();
+        //     print('Logout presssed');
+        //     signOut();
+        //     // Navigator.push(
+        //     //     context,
+        //     //     MaterialPageRoute(
+        //     //         builder: (_) => const LoginPage(
+        //     //               title: 'hhhh',
+        //     //             )));
+        //   },
+        //   backgroundColor: Colors.green,
+        //   child: const Icon(Icons.logout_rounded),
+        // ),
         body: Row(
           // visible: isLoaded,
           // replacement: const Center(
@@ -137,11 +156,72 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
+        // bottomSheet: Container(
+
+        //   padding: const EdgeInsets.symmetric(vertical: 8.0),
+
+        //   color: Colors.red,
+        //   // alignment: Alignment.center,
+        //   child: const Text("Footer"),
+        // ),
+        bottomNavigationBar: Container(
+          color: Colors.red,
+          // alignment: Alignment.bottomCenter,
+          // padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: const Text('FOOTER'),
+          //     Center(
+          //   child:
+          //   ElevatedButton(
+          //     child: const Text(
+          //       'Show Pop-up',
+          //       style: TextStyle(
+          //         color: Colors.white,
+          //       ),
+          //     ),
+          //     // color: Colors.black,
+          //     onPressed: () {
+          //       showDialog(
+          //         context: context,
+          //         builder: (BuildContext context) => _buildPopupDialog(context),
+          //       );
+          //     },
+          //   ),
+          // ),
+        ),
       );
     });
   }
 
   LoginPage logoutMettod() => const LoginPage(title: 'Login Page');
+
+  Widget _buildPopupDialog(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Popup example'),
+      content: const Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text("Hello"),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            signOut();
+          },
+          // color: Theme.of(context).primaryColor,
+          child: const Text('Logout'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          // color: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
 }
 
 class LocationsPage extends StatelessWidget {
