@@ -201,7 +201,7 @@ class _HomePageState extends State<HomePage> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text("Hello"),
+          Text("Logout pup up model"),
         ],
       ),
       actions: <Widget>[
