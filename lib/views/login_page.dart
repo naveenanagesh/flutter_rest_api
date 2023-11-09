@@ -140,7 +140,11 @@ class _LoginState extends State<LoginPage> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           print('naveeeeeanananananan');
-          return const newWidget();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage(title: 'Home Page')),
+          );
+          // return const newWidget();
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
@@ -151,15 +155,15 @@ class _LoginState extends State<LoginPage> {
   }
 }
 
-class newWidget extends StatelessWidget {
-  const newWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return const HomePage(
-      title: 'Home Page',
-    );
-  }
-}
+// class newWidget extends StatelessWidget {
+//   const newWidget({
+//     super.key,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return const HomePage(
+//       title: 'Home Page',
+//     );
+//   }
+// }
