@@ -6,7 +6,8 @@ import 'package:flutter_rest_api/models/therapists.dart';
 // import 'package:flutter_rest_api/views/camera_page.dart';
 import 'package:flutter_rest_api/views/images_page.dart';
 import 'package:flutter_rest_api/views/login_page.dart';
-import 'package:flutter_rest_api/views/video_page.dart';
+import 'package:flutter_rest_api/views/platform-specific-code.dart';
+// import 'package:flutter_rest_api/views/video_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
@@ -75,9 +76,9 @@ class _HomePageState extends State<HomePage> {
       case 2:
         page = const ImagesPage();
         break;
-      // case 3:
-      //   page = CameraScreen();
-      //   break;
+      case 3:
+        page = const PlatformPage();
+        break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -145,10 +146,13 @@ class _HomePageState extends State<HomePage> {
                     icon: Icon(Icons.face),
                     label: Text('Images'),
                   ),
+                  // NavigationRailDestination(
+                  //   icon: Icon(Icons.video_call),
+                  //   label: Text('Video'),
+                  // ),
                   NavigationRailDestination(
-                    icon: Icon(Icons.video_call),
-                    label: Text('Video'),
-                  ),
+                      icon: Icon(Icons.app_blocking_rounded),
+                      label: Text("Platform Specifications"))
                 ],
                 selectedIndex: selectedIndex,
                 onDestinationSelected: (value) {
