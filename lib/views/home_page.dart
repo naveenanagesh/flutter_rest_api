@@ -7,6 +7,7 @@ import 'package:flutter_rest_api/models/therapists.dart';
 import 'package:flutter_rest_api/views/images_page.dart';
 import 'package:flutter_rest_api/views/login_page.dart';
 import 'package:flutter_rest_api/views/platform-specific-code.dart';
+import 'package:flutter_rest_api/views/tabs_page.dart';
 // import 'package:flutter_rest_api/views/video_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -86,7 +87,25 @@ class _HomePageState extends State<HomePage> {
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
         appBar: AppBar(
+          elevation: 4.0,
+          // centerTitle: false,
+          backgroundColor: Colors.lightBlueAccent,
+
           title: Text(widget.title),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                // Add onPressed action here
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.more_vert),
+              onPressed: () {
+                _showPopupMenu(context);
+              },
+            ),
+          ],
         ),
         floatingActionButton: ElevatedButton(
           // color: Colors.black,
@@ -152,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                   // ),
                   NavigationRailDestination(
                       icon: Icon(Icons.app_blocking_rounded),
-                      label: Text("Platform Specifications"))
+                      label: Text("Platform Specifications")),
                 ],
                 selectedIndex: selectedIndex,
                 onDestinationSelected: (value) {
@@ -350,4 +369,53 @@ class ServicePage extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showPopupMenu(BuildContext context) {
+  final RenderBox appBarRenderBox = context.findRenderObject() as RenderBox;
+  final RenderBox overlay =
+      Overlay.of(context)!.context.findRenderObject() as RenderBox;
+  final RelativeRect position = RelativeRect.fromRect(
+    Rect.fromPoints(
+      appBarRenderBox.localToGlobal(appBarRenderBox.size.topRight(Offset.zero),
+          ancestor: overlay),
+      appBarRenderBox.localToGlobal(
+          appBarRenderBox.size.bottomRight(Offset.zero),
+          ancestor: overlay),
+    ),
+    Offset.zero & overlay.size,
+  );
+
+  showMenu<String>(
+    context: context,
+    position: position,
+    items: [
+      const PopupMenuItem<String>(
+        value: 'item1',
+        child: Text('Item 1'),
+      ),
+      const PopupMenuItem<String>(
+        value: 'tabs',
+        child: Text('Tabs'),
+      ),
+      const PopupMenuItem<String>(
+        value: 'item3',
+        child: Text('Item 3'),
+      ),
+    ],
+    elevation: 12.0,
+  ).then((selectedValue) {
+    if (selectedValue != null) {
+      switch (selectedValue) {
+        case "tabs":
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const TabBarPage()));
+          break;
+        default:
+          throw UnimplementedError('no widget for $selectedValue');
+      }
+      // Perform action based on the selected item
+      print('Selected: $selectedValue');
+    }
+  });
 }
