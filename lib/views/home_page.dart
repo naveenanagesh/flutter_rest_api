@@ -1,3 +1,4 @@
+import 'package:flutter_rest_api/components/infinite-scroll.dart';
 import 'package:flutter_rest_api/models/locations.dart';
 import 'package:flutter_rest_api/services/login.dart';
 import 'package:flutter_rest_api/services/remote_service.dart';
@@ -399,8 +400,8 @@ void _showPopupMenu(BuildContext context) {
         child: Text('Tabs'),
       ),
       const PopupMenuItem<String>(
-        value: 'item3',
-        child: Text('Item 3'),
+        value: 'infinteScroll',
+        child: Text('Infinte Scroll Example'),
       ),
     ],
     elevation: 12.0,
@@ -410,6 +411,12 @@ void _showPopupMenu(BuildContext context) {
         case "tabs":
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const TabBarPage()));
+          break;
+        case "infinteScroll":
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const InfiniteScrollDemo()));
           break;
         default:
           throw UnimplementedError('no widget for $selectedValue');
