@@ -21,7 +21,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var selectedIndex = 0;
+  var selectedIndex;
   LocationsList? locations;
   TherapistsList? therapists;
   var isLoaded = false;
@@ -35,6 +35,9 @@ class _HomePageState extends State<HomePage> {
 
   getLocationsList() async {
     locations = await RemoteService().getLocations();
+    setState(() {
+      selectedIndex = 0;
+    });
     // if (locations != null) {
     //   setState(() {
     //     isLoaded = true;
@@ -45,14 +48,11 @@ class _HomePageState extends State<HomePage> {
 
   getTherapistsList() async {
     therapists = await RemoteService().getTherapists();
-    print(therapists);
-
     if (therapists != null) {
       setState(() {
         isLoaded = true;
       });
     }
-    print(isLoaded);
   }
 
   signOut() async {
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = LocationsPage(locations, isLoaded);
+        page = LocationsPageState(locations: locations, isLoaded: isLoaded);
         break;
       case 1:
         page = ServicePage(therapists, isLoaded);
@@ -82,7 +82,8 @@ class _HomePageState extends State<HomePage> {
         page = const PlatformPage();
         break;
       default:
-        throw UnimplementedError('no widget for $selectedIndex');
+        page = const CircularProgressIndicator();
+        break;
     }
 
     return LayoutBuilder(builder: (context, constraints) {
@@ -258,55 +259,106 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class LocationsPage extends StatelessWidget {
-  LocationsPage(this.locations, this.isLoaded, {super.key});
-  var isLoaded = false;
-  LocationsList? locations;
+class LocationsPageState extends StatefulWidget {
+  const LocationsPageState(
+      {super.key, required this.locations, required this.isLoaded});
+
+  final LocationsList? locations;
+  final bool isLoaded;
+  @override
+  State<LocationsPageState> createState() => _LocationState();
+}
+
+class _LocationState extends State<LocationsPageState> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // print(widget.locations.toString());
+  }
+
+  @override
+  void didUpdateWidget(LocationsPageState oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // print("didU[date]");
+  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: ListView.builder(
-        itemCount: locations?.length,
-        itemBuilder: (context, index) {
-          return Container(
-            padding: const EdgeInsets.all(16),
-            child: Row(
+      child: widget.locations?.items.isEmpty ?? false
+          ? const CircularProgressIndicator()
+          : ListView.builder(
+              itemCount: widget.locations?.items.length,
+              itemBuilder: (context, index) {
+                return Location(widget.locations?.items[index]);
+              },
+            ),
+    );
+  }
+}
+
+//  FutureBuilder<LocationsPageState> buildFutureBuilder() {
+//     return FutureBuilder<LocationsPageState>(
+//       future: locations,
+//       builder: (context, snapshot) {
+//         if (snapshot.hasData) {
+//           print('naveeeeeanananananan');
+//           Navigator.push(
+//             context,
+//             MaterialPageRoute(builder: (context) => const HomePage(title: 'Home Page')),
+//           );
+//           // return const newWidget();
+//         } else if (snapshot.hasError) {
+//           return Text('${snapshot.error}');
+//         }
+
+//         return const CircularProgressIndicator();
+//       },
+//     );
+//   }
+// }
+
+class Location extends StatelessWidget {
+  const Location(this.location, {super.key});
+  final Locations? location;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Container(
+            height: 20,
+            width: 20,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.grey[300],
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  height: 20,
-                  width: 20,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.grey[300],
+                Text(
+                  location?.name ?? '',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        locations?.items[index].name ?? '',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        locations?.items[index].address ?? '',
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
+                Text(
+                  location?.address ?? '',
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
