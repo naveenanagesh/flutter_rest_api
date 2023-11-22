@@ -1,5 +1,7 @@
 // import 'dart:ffi';
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rest_api/models/login.dart';
 import 'package:flutter_rest_api/services/login.dart';
@@ -25,8 +27,12 @@ class _LoginState extends State<LoginPage> {
     super.initState();
   }
 
-  Future<Login> login(String email, String password) async {
-    return await LoginService.login(email, password);
+  void login(String email, String password) async {
+    await LoginService.login(email, password).then((result) => {
+          setState(() {
+            loginData = Future.value(result);
+          })
+        });
   }
 
   @override
@@ -87,13 +93,16 @@ class _LoginState extends State<LoginPage> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      print(emailController.text);
-                      print(passwordController.text);
-                      setState(() {
-                        loginData = login(
-                            emailController.text, passwordController.text);
-                        print(loginData);
-                      });
+                      login(emailController.text, passwordController.text);
+                      // setState(() {
+                      //   loginData =  login(
+                      //       emailController.text, passwordController.text
+                      //   );
+                      // });
+
+                      // setState(() {
+                      //   loginData =
+                      // });
                       // datat1 = LoginService.login(
                       //     emailController.text, passwordController.text);
                       // data = datat1
@@ -133,8 +142,6 @@ class _LoginState extends State<LoginPage> {
   }
 
   FutureBuilder<Login> buildFutureBuilder() {
-    print('lofingggggg');
-    print(loginData);
     return FutureBuilder<Login>(
       future: loginData,
       builder: (context, snapshot) {
@@ -142,7 +149,8 @@ class _LoginState extends State<LoginPage> {
           print('naveeeeeanananananan');
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const HomePage(title: 'Home Page')),
+            MaterialPageRoute(
+                builder: (context) => const HomePage(title: 'Home Page')),
           );
           // return const newWidget();
         } else if (snapshot.hasError) {
