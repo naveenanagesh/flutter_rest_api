@@ -86,7 +86,14 @@ class _InfiniteScrollDemoState extends State<InfiniteScrollDemo> {
                 if (index < _data.length) {
                   // Display fetched data in list items
                   return ListTile(
-                    title: Text(
+                    title: Image.network(
+                      _data[index]['thumbnailUrl'],
+                      width: 5, // Adjust width as needed
+                      height: 100, // Adjust height as needed
+                      fit: BoxFit.cover, // Adjust image fit
+                    ),
+
+                    subtitle: Text(
                         'Album Id:${_data[index]['albumId']} ---${_data[index]['title']}'), // Adjust data display as per your API response
                   );
                 } else {
