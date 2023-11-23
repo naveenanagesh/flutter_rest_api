@@ -1,3 +1,4 @@
+import 'package:flutter_rest_api/components/infinite-scroll.dart';
 import 'package:flutter_rest_api/models/locations.dart';
 import 'package:flutter_rest_api/services/login.dart';
 import 'package:flutter_rest_api/services/remote_service.dart';
@@ -6,7 +7,9 @@ import 'package:flutter_rest_api/models/therapists.dart';
 // import 'package:flutter_rest_api/views/camera_page.dart';
 import 'package:flutter_rest_api/views/images_page.dart';
 import 'package:flutter_rest_api/views/login_page.dart';
-import 'package:flutter_rest_api/views/video_page.dart';
+import 'package:flutter_rest_api/views/platform-specific-code.dart';
+import 'package:flutter_rest_api/views/tabs_page.dart';
+// import 'package:flutter_rest_api/views/video_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
@@ -75,9 +78,9 @@ class _HomePageState extends State<HomePage> {
       case 2:
         page = const ImagesPage();
         break;
-      // case 3:
-      //   page = CameraScreen();
-      //   break;
+      case 3:
+        page = const PlatformPage();
+        break;
       default:
         page = const CircularProgressIndicator();
         break;
@@ -86,7 +89,25 @@ class _HomePageState extends State<HomePage> {
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
         appBar: AppBar(
+          elevation: 4.0,
+          // centerTitle: false,
+          backgroundColor: Colors.lightBlueAccent,
+
           title: Text(widget.title),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                // Add onPressed action here
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.more_vert),
+              onPressed: () {
+                _showPopupMenu(context);
+              },
+            ),
+          ],
         ),
         floatingActionButton: ElevatedButton(
           // color: Colors.black,
@@ -146,10 +167,13 @@ class _HomePageState extends State<HomePage> {
                     icon: Icon(Icons.face),
                     label: Text('Images'),
                   ),
+                  // NavigationRailDestination(
+                  //   icon: Icon(Icons.video_call),
+                  //   label: Text('Video'),
+                  // ),
                   NavigationRailDestination(
-                    icon: Icon(Icons.video_call),
-                    label: Text('Video'),
-                  ),
+                      icon: Icon(Icons.app_blocking_rounded),
+                      label: Text("Platform Specifications")),
                 ],
                 selectedIndex: selectedIndex,
                 onDestinationSelected: (value) {
@@ -398,4 +422,59 @@ class ServicePage extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showPopupMenu(BuildContext context) {
+  final RenderBox appBarRenderBox = context.findRenderObject() as RenderBox;
+  final RenderBox overlay =
+      Overlay.of(context)!.context.findRenderObject() as RenderBox;
+  final RelativeRect position = RelativeRect.fromRect(
+    Rect.fromPoints(
+      appBarRenderBox.localToGlobal(appBarRenderBox.size.topRight(Offset.zero),
+          ancestor: overlay),
+      appBarRenderBox.localToGlobal(
+          appBarRenderBox.size.bottomRight(Offset.zero),
+          ancestor: overlay),
+    ),
+    Offset.zero & overlay.size,
+  );
+
+  showMenu<String>(
+    context: context,
+    position: position,
+    items: [
+      const PopupMenuItem<String>(
+        value: 'item1',
+        child: Text('Item 1'),
+      ),
+      const PopupMenuItem<String>(
+        value: 'tabs',
+        child: Text('Tabs'),
+      ),
+      const PopupMenuItem<String>(
+        value: 'infinteScroll',
+        child: Text('Infinte Scroll Example'),
+      ),
+    ],
+    elevation: 12.0,
+  ).then((selectedValue) {
+    if (selectedValue != null) {
+      switch (selectedValue) {
+        case "tabs":
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const TabBarPage()));
+          break;
+        case "infinteScroll":
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const InfiniteScrollDemo()));
+          break;
+        default:
+          throw UnimplementedError('no widget for $selectedValue');
+      }
+      // Perform action based on the selected item
+      print('Selected: $selectedValue');
+    }
+  });
 }

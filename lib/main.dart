@@ -126,9 +126,20 @@ class MyApp extends StatelessWidget {
   MyApp({required this.store});
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colorScheme = ColorScheme.fromSeed(
+      brightness: MediaQuery.platformBrightnessOf(context),
+      seedColor: Colors.pink.shade50,
+    );
     return StoreProvider<AppState>(
       store: store,
       child: MaterialApp(
+        theme: ThemeData(
+          colorScheme: colorScheme,
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: colorScheme.tertiary,
+            foregroundColor: colorScheme.onTertiary,
+          ),
+        ),
         home: StoreConnector<AppState, bool>(
           converter: (store) => store.state.isLoggedIn,
           builder: (context, isAuthenticated) {
