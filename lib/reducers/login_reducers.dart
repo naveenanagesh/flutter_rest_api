@@ -1,7 +1,7 @@
-import 'package:flutter_rest_api/models/app_state.dart';
+import 'package:flutter_rest_api/models/app_state1.dart';
 import 'package:flutter_rest_api/actions/login_actions.dart';
 
-AppState appReducer(AppState state, dynamic action) {
+AppStates appReducer(AppStates state, dynamic action) {
   if (action is LoginRequestAction) {
     return state.copyWith(isLoading: true, error: "", message: "");
   }
@@ -26,15 +26,15 @@ AppState appReducer(AppState state, dynamic action) {
   return state;
 }
 
-extension AppStateCopyWith on AppState {
-  AppState copyWith({
+extension AppStateCopyWith on AppStates {
+  AppStates copyWith({
     bool? isLoading,
     bool? isLoggedIn,
     String? token,
     String? error,
     String? message,
   }) {
-    return AppState(
+    return AppStates(
       isLoading: isLoading ?? this.isLoading,
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       token: token ?? this.token,

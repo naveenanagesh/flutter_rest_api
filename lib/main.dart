@@ -96,23 +96,37 @@
 //   }
 // }
 
-//
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:flutter_rest_api/reducers/login_reducers.dart';
 import 'package:flutter_rest_api/views/home_page.dart';
 import 'package:flutter_rest_api/views/login_page.dart';
 import 'package:redux/redux.dart';
 
-import 'package:flutter_rest_api/actions/auth_actions.dart';
+import 'package:flutter_rest_api/reducers/auth_reducer.dart';
 import 'package:flutter_rest_api/models/app_state.dart';
 import 'package:flutter_rest_api/services/auth_middleware.dart';
 
+// import 'package:shared_preferences/shared_preferences.dart';
+
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   final prefs = await SharedPreferences.getInstance();
+//   final bool isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
+
+//   final store = Store<AppState>(
+//     authReducer as Reducer<AppState>,
+//     initialState: AppState(isAuthenticated),
+//     middleware: [createAuthMiddleware()],
+//   );
+//   store
+//       .dispatch(SaveAuthStateAction(isAuthenticated)); // Dispatch initial state
+
+//   runApp(MyApp(store: store));
+// }
+
 void main() {
   final store = Store<AppState>(
-    appReducer,
+    authReducer,
     initialState: AppState.initial(), // Initialize with isAuthenticated: false
     middleware: [createAuthMiddleware()],
   );
@@ -124,6 +138,7 @@ class MyApp extends StatelessWidget {
   final Store<AppState> store;
 
   MyApp({required this.store});
+
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = ColorScheme.fromSeed(
@@ -141,12 +156,18 @@ class MyApp extends StatelessWidget {
           ),
         ),
         home: StoreConnector<AppState, bool>(
-          converter: (store) => store.state.isLoggedIn,
+          converter: (store) => store.state.isAuthenticated,
           builder: (context, isAuthenticated) {
             if (isAuthenticated) {
-              return const HomePage(
-                title: 'Home Page',
-              );
+              // Navigate to HomePage explicitly when isAuthenticated is true
+              // WidgetsBinding.instance.addPostFrameCallback((_) {
+              //   Navigator.of(context).pushReplacement(
+              //     MaterialPageRoute(
+              //         builder: (context) => const HomePage(title: 'Homeeeee')),
+              //   );
+              // });
+              // return Container();
+              return const HomePage(title: 'Homjkmj');
             } else {
               return const LoginPage(title: 'Login page');
             }

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter_rest_api/models/app_state1.dart';
 import 'package:flutter_rest_api/models/login.dart';
 import 'package:flutter_rest_api/models/logout.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_rest_api/models/app_state.dart';
 import 'package:flutter_rest_api/actions/login_actions.dart';
 import 'package:redux/redux.dart';
 class LoginService {
@@ -58,7 +58,7 @@ class LogoutService {
 
 
 void loginMiddleware(
-    Store<AppState> store, dynamic action, NextDispatcher next) {
+    Store<AppStates> store, dynamic action, NextDispatcher next) {
   if (action is LoginRequestAction) {
     // Perform the API request
     http.post(Uri.parse('https://api2.squeezemassage.com/api/v2/login'), body: {

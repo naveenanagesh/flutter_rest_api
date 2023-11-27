@@ -12,3 +12,9 @@ class LoginFailureAction {
 
   LoginFailureAction(this.error);
 }
+
+class SaveAuthStateAction {
+  final bool isAuthenticated;
+
+  SaveAuthStateAction(this.isAuthenticated);
+}

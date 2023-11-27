@@ -1,11 +1,8 @@
 // import 'dart:ffi';
-
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_rest_api/models/login.dart';
-import 'package:flutter_rest_api/services/login.dart';
-import 'package:flutter_rest_api/views/home_page.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_rest_api/actions/auth_actions.dart';
+import 'package:flutter_rest_api/models/app_state.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key, required this.title}) : super(key: key);
@@ -19,20 +16,10 @@ class _LoginState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  Future<Login>? loginData;
-  var isLoaded = false;
 
   @override
   void initState() {
     super.initState();
-  }
-
-  void login(String email, String password) async {
-    await LoginService.login(email, password).then((result) => {
-          setState(() {
-            loginData = Future.value(result);
-          })
-        });
   }
 
   @override
@@ -44,7 +31,7 @@ class _LoginState extends State<LoginPage> {
       body: Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.all(8),
-        child: (loginData == null) ? buildColumn() : buildFutureBuilder(),
+        child: buildColumn(),
       ),
     );
   }
@@ -93,16 +80,12 @@ class _LoginState extends State<LoginPage> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      login(emailController.text, passwordController.text);
-                      // setState(() {
-                      //   loginData =  login(
-                      //       emailController.text, passwordController.text
-                      //   );
-                      // });
+                      print(emailController.text);
+                      print(passwordController.text);
+                      StoreProvider.of<AppState>(context).dispatch(
+                          LoginRequestAction(
+                              emailController.text, passwordController.text));
 
-                      // setState(() {
-                      //   loginData =
-                      // });
                       // datat1 = LoginService.login(
                       //     emailController.text, passwordController.text);
                       // data = datat1
@@ -140,38 +123,4 @@ class _LoginState extends State<LoginPage> {
       ),
     );
   }
-
-  FutureBuilder<Login> buildFutureBuilder() {
-    return FutureBuilder<Login>(
-      future: loginData,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          print('naveeeeeanananananan');
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const HomePage(title: 'Home Page')),
-          );
-          // return const newWidget();
-        } else if (snapshot.hasError) {
-          return Text('${snapshot.error}');
-        }
-
-        return const CircularProgressIndicator();
-      },
-    );
-  }
 }
-
-// class newWidget extends StatelessWidget {
-//   const newWidget({
-//     super.key,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return const HomePage(
-//       title: 'Home Page',
-//     );
-//   }
-// }

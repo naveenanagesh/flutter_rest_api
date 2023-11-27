@@ -35,15 +35,11 @@ class _HomePageState extends State<HomePage> {
 
   getLocationsList() async {
     locations = await RemoteService().getLocations();
+
     setState(() {
       selectedIndex = 0;
     });
-    // if (locations != null) {
-    //   setState(() {
-    //     isLoaded = true;
-    //   });
-    // }
-    // print(isLoaded);
+    print(isLoaded);
   }
 
   getTherapistsList() async {
@@ -70,7 +66,7 @@ class _HomePageState extends State<HomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = LocationsPageState(locations: locations, isLoaded: isLoaded);
+        page = LocationsPage(locations, isLoaded);
         break;
       case 1:
         page = ServicePage(therapists, isLoaded);
@@ -259,106 +255,55 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class LocationsPageState extends StatefulWidget {
-  const LocationsPageState(
-      {super.key, required this.locations, required this.isLoaded});
-
-  final LocationsList? locations;
-  final bool isLoaded;
-  @override
-  State<LocationsPageState> createState() => _LocationState();
-}
-
-class _LocationState extends State<LocationsPageState> {
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // print(widget.locations.toString());
-  }
-
-  @override
-  void didUpdateWidget(LocationsPageState oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // print("didU[date]");
-  }
+class LocationsPage extends StatelessWidget {
+  LocationsPage(this.locations, this.isLoaded, {super.key});
+  var isLoaded = false;
+  LocationsList? locations;
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: widget.locations?.items.isEmpty ?? false
-          ? const CircularProgressIndicator()
-          : ListView.builder(
-              itemCount: widget.locations?.items.length,
-              itemBuilder: (context, index) {
-                return Location(widget.locations?.items[index]);
-              },
-            ),
-    );
-  }
-}
-
-//  FutureBuilder<LocationsPageState> buildFutureBuilder() {
-//     return FutureBuilder<LocationsPageState>(
-//       future: locations,
-//       builder: (context, snapshot) {
-//         if (snapshot.hasData) {
-//           print('naveeeeeanananananan');
-//           Navigator.push(
-//             context,
-//             MaterialPageRoute(builder: (context) => const HomePage(title: 'Home Page')),
-//           );
-//           // return const newWidget();
-//         } else if (snapshot.hasError) {
-//           return Text('${snapshot.error}');
-//         }
-
-//         return const CircularProgressIndicator();
-//       },
-//     );
-//   }
-// }
-
-class Location extends StatelessWidget {
-  const Location(this.location, {super.key});
-  final Locations? location;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Container(
-            height: 20,
-            width: 20,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.grey[300],
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView.builder(
+        itemCount: locations?.length,
+        itemBuilder: (context, index) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            child: Row(
               children: [
-                Text(
-                  location?.name ?? '',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                Container(
+                  height: 20,
+                  width: 20,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.grey[300],
                   ),
                 ),
-                Text(
-                  location?.address ?? '',
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        locations?.items[index].name ?? '',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        locations?.items[index].address ?? '',
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

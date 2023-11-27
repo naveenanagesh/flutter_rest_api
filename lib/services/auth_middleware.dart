@@ -1,9 +1,9 @@
+import 'package:flutter_rest_api/models/app_state.dart';
 import 'package:redux/redux.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:flutter_rest_api/actions/auth_actions.dart';
-import 'package:flutter_rest_api/models/app_state.dart';
 
 Middleware<AppState> createAuthMiddleware() {
   return (Store<AppState> store, action, NextDispatcher next) async {
@@ -11,7 +11,6 @@ Middleware<AppState> createAuthMiddleware() {
       var client = http.Client();
 
       try {
-        // Make the API request
         var uri = Uri.parse('https://api2.squeezemassage.com/api/v2/login');
 
         final response = await client.post(
