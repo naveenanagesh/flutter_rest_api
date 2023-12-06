@@ -1,15 +1,19 @@
-import 'package:flutter_rest_api/components/infinite-scroll.dart';
-import 'package:flutter_rest_api/models/locations.dart';
-import 'package:flutter_rest_api/services/login.dart';
-import 'package:flutter_rest_api/services/remote_service.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_rest_api/models/therapists.dart';
-// import 'package:flutter_rest_api/views/camera_page.dart';
-import 'package:flutter_rest_api/views/images_page.dart';
-import 'package:flutter_rest_api/views/login_page.dart';
-import 'package:flutter_rest_api/views/platform-specific-code.dart';
-import 'package:flutter_rest_api/views/tabs_page.dart';
-// import 'package:flutter_rest_api/views/video_page.dart';
+import 'package:flutter_rest_api/views/chat_page.dart';
+
+import '../components/infinite-scroll.dart';
+import '../components/todo-list.dart';
+import '../models/locations.dart';
+import '../services/login.dart';
+import '../services/remote_service.dart';
+import '../models/therapists.dart';
+// import '../views/camera_page.dart';
+import '../views/images_page.dart';
+import '../views/login_page.dart';
+import '../views/platform-specific-code.dart';
+import '../views/tabs_page.dart';
+// import '../views/video_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
@@ -389,22 +393,30 @@ void _showPopupMenu(BuildContext context) {
     position: position,
     items: [
       const PopupMenuItem<String>(
-        value: 'item1',
-        child: Text('Item 1'),
+        value: 'todo',
+        child: Text('ToDo List'),
       ),
       const PopupMenuItem<String>(
         value: 'tabs',
-        child: Text('Tabs'),
+        child: Text('Tabs List'),
       ),
       const PopupMenuItem<String>(
         value: 'infinteScroll',
-        child: Text('Infinte Scroll Example'),
+        child: Text('Infinte Scroll List'),
+      ),
+      const PopupMenuItem<String>(
+        value: 'chat',
+        child: Text('Chat With us'),
       ),
     ],
     elevation: 12.0,
   ).then((selectedValue) {
     if (selectedValue != null) {
       switch (selectedValue) {
+        case "todo":
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => TodoList()));
+          break;
         case "tabs":
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const TabBarPage()));
@@ -414,6 +426,10 @@ void _showPopupMenu(BuildContext context) {
               context,
               MaterialPageRoute(
                   builder: (context) => const InfiniteScrollDemo()));
+          break;
+        case "chat":
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ChatPage()));
           break;
         default:
           throw UnimplementedError('no widget for $selectedValue');

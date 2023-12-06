@@ -15,7 +15,7 @@ class _ImagesPage extends State<ImagesPage> {
         child: const Row(
           children: [
             Image(
-              image: AssetImage('images/images1.jpeg'),
+              image: AssetImage('assets/images/images1.jpeg'),
               width: 200.0,
               height: 200.0,
             ),
