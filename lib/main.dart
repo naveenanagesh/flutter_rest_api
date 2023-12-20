@@ -98,6 +98,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_rest_api/actions/auth_actions.dart';
 import 'package:flutter_rest_api/views/home_page.dart';
 import 'package:flutter_rest_api/views/login_page.dart';
 import 'package:redux/redux.dart';
@@ -106,33 +107,33 @@ import 'package:flutter_rest_api/reducers/auth_reducer.dart';
 import 'package:flutter_rest_api/models/app_state.dart';
 import 'package:flutter_rest_api/services/auth_middleware.dart';
 
-// import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   final prefs = await SharedPreferences.getInstance();
-//   final bool isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final bool isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
 
-//   final store = Store<AppState>(
-//     authReducer as Reducer<AppState>,
-//     initialState: AppState(isAuthenticated),
-//     middleware: [createAuthMiddleware()],
-//   );
-//   store
-//       .dispatch(SaveAuthStateAction(isAuthenticated)); // Dispatch initial state
-
-//   runApp(MyApp(store: store));
-// }
-
-void main() {
   final store = Store<AppState>(
-    authReducer,
-    initialState: AppState.initial(), // Initialize with isAuthenticated: false
+    authReducer as Reducer<AppState>,
+    initialState: AppState(isAuthenticated),
     middleware: [createAuthMiddleware()],
   );
+  store
+      .dispatch(SaveAuthStateAction(isAuthenticated)); // Dispatch initial state
 
   runApp(MyApp(store: store));
 }
+
+// void main() {
+//   final store = Store<AppState>(
+//     authReducer,
+//     initialState: AppState.initial(), // Initialize with isAuthenticated: false
+//     middleware: [createAuthMiddleware()],
+//   );
+
+//   runApp(MyApp(store: store));
+// }
 
 class MyApp extends StatelessWidget {
   final Store<AppState> store;
@@ -167,7 +168,7 @@ class MyApp extends StatelessWidget {
               //   );
               // });
               // return Container();
-              return const HomePage(title: 'Homjkmj');
+              return const HomePage(title: 'Home Page');
             } else {
               return const LoginPage(title: 'Login page');
             }
